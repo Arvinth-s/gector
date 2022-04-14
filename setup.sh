@@ -13,6 +13,6 @@ pip3 install -U pip setuptools wheel
 pip3 install -e .
 python3 -m spacy download en
 
-pip install levenshein
+pip install Levenshtein
 pip install datasets
 pip install filelock
