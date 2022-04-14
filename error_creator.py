@@ -56,7 +56,7 @@ if(not os.path.isdir(save_dir)):
 f_org = open(save_dir + 'original.txt', 'a')
 f_cor = open(save_dir + 'corrupted.txt', 'a')
 # dataset_len = len(dataset)
-dataset_len = 10
+dataset_len = 50
 
 count = 0
 
@@ -64,24 +64,25 @@ for data in tqdm(dataset, total=dataset_len):
   count += 1
   if(count > dataset_len): break
   data = data[curDataset["text_label"]]
-  data = list(data.split(". "))
+  data_original = list(data.split(". "))
 
   
-  for d in data:
+  for d in data_original:
     if(d=='\n' or len(d)==0):continue
     d += "\n"
     f_org.write(d)
 
 
-  data=corrupt_gender(dataset[0][curDataset["text_label"]])
+  data=corrupt_gender(data)
   data=corrupt_homophones(data)
 
-  data = list(data.split(". "))
+  data_corrupted = list(data.split(". "))
 
-  for d in data:
+  for d in data_corrupted:
     if(d=='\n' or len(d)==0):continue
-    f_cor.write(d)
     d += "\n"
+    f_cor.write(d)
+
 f_org.close()
 f_cor.close()
 
