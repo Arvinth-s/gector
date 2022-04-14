@@ -46,6 +46,7 @@ python predict.py --model_path MODEL_DIR/roberta_1_gectorv2.th --input_file 'dum
 
 [download_zip_repo](https://stackoverflow.com/questions/16261100/cant-download-github-project-with-curl-command)
 
+[chiense_gector](https://github.com/grammarly/gector/issues/94)
 
 ## repo dependencies
 [errant](https://github.com/chrisjbryant/errant)
