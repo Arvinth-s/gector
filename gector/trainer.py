@@ -188,6 +188,7 @@ class Trainer(TrainerBase):
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.train_data = train_dataset
+        print(self.train_data)
         self._validation_data = validation_dataset
         self.accumulated_batch_count = accumulated_batch_count
         self.cold_step_count = cold_step_count
@@ -327,13 +328,20 @@ class Trainer(TrainerBase):
         train_generator_tqdm = Tqdm.tqdm(train_generator, total=num_training_batches)
         cumulative_batch_size = 0
         self.optimizer.zero_grad()
-        for batch_group in train_generator_tqdm:
+        # print('before data')
+        for batch_group in train_generator:
+            # print('inside train_generator')
             batches_this_epoch += 1
             self._batch_num_total += 1
             batch_num_total = self._batch_num_total
 
             iter_len = self.accumulated_batch_count \
                 if batches_this_epoch <= (num_training_batches - residue) else residue
+            
+
+            # remove this
+            # print(f'Before forward pass - Cuda memory allocated: {torch.cuda.memory_allocated() / 1e9}')
+            # print(f'Before forward pass - Cuda memory cached: {torch.cuda.memory_cached() / 1e9}')
 
             if self.cuda_verbose_step is not None and batch_num_total % self.cuda_verbose_step == 0:
                 print(f'Before forward pass - Cuda memory allocated: {torch.cuda.memory_allocated() / 1e9}')
@@ -543,13 +551,16 @@ class Trainer(TrainerBase):
             metrics["best_validation_" + key] = value
 
         for epoch in range(epoch_counter, self._num_epochs):
+            print('epoch', epoch)
             if epoch == self.cold_step_count and epoch != 0:
                 for param_group in self.optimizer.param_groups:
                     param_group['lr'] = base_lr
                 self.model.text_field_embedder._token_embedders['bert'].set_weights(freeze=False)
 
+
             epoch_start_time = time.time()
             train_metrics = self._train_epoch(epoch)
+
 
             # get peak of memory usage
             if "cpu_memory_MB" in train_metrics:
@@ -559,6 +570,11 @@ class Trainer(TrainerBase):
             for key, value in train_metrics.items():
                 if key.startswith("gpu_"):
                     metrics["peak_" + key] = max(metrics.get("peak_" + key, 0), value)
+
+            '''
+            print('calculate val loss')
+            '''
+
 
             # clear cache before validation
             torch.cuda.empty_cache()
@@ -581,6 +597,7 @@ class Trainer(TrainerBase):
             self._tensorboard.log_metrics(
                 train_metrics, val_metrics=val_metrics, log_to_console=True, epoch=epoch + 1
             )  # +1 because tensorboard doesn't like 0
+
 
             # Create overall metrics dict
             training_elapsed_time = time.time() - training_start_time
