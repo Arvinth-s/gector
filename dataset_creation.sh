@@ -1,7 +1,8 @@
 clear
 
 rm ./dump/tamil -r
-mkdir ./dump/tamil/
+mkdir ./dump/tamil/train/
+mkdir ./dump/tamil/dev/
 
 
 python error_creator.py

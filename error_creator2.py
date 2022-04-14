@@ -3,6 +3,16 @@ import re
 from datasets import load_dataset
 import os
 from tqdm import tqdm
+import argparse
+ 
+ 
+parser = argparse.ArgumentParser()
+ 
+parser.add_argument("-sd", "--savedir", help = "dataset directory", default='dump/tamil2/')
+parser.add_argument("-n", "--ndata", help = "size of dataset", default=10, type=int)
+ 
+args = parser.parse_args()
+ 
 
 def corrupt_homophones(data):
   output_data=""
@@ -45,22 +55,23 @@ Tamil_Dataset = {
 
 curDataset =Tamil_Dataset
 
-dataset_len = 50
+dataset_len = args.ndata
 
 
-train_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[:1000]')
-test_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[1000:]')
+train_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[:100]')
+test_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[100:]')
+print(test_dataset)
 # print(dataset[0][curDataset["text_label"]])
 
 
 
-save_dir = './dump/tamil/train/'
+save_dir = args.savedir+'train/'
 
 if(not os.path.isdir(save_dir)):
   os.makedirs(save_dir)
 
-f_org = open(save_dir + 'original.txt', 'a')
-f_cor = open(save_dir + 'corrupted.txt', 'a')
+f_org = open(save_dir + 'original.txt', 'w')
+f_cor = open(save_dir + 'corrupted.txt', 'w')
 # dataset_len = len(dataset)
 
 count = 0
@@ -91,11 +102,13 @@ for data in tqdm(train_dataset, total=dataset_len):
 f_org.close()
 f_cor.close()
 
-save_dir = './dump/tamil/dev/'
+save_dir = args.savedir+'dev/'
 
 
-f_org = open(save_dir + 'original.txt', 'a')
-f_cor = open(save_dir + 'corrupted.txt', 'a')
+f_org = open(save_dir + 'original.txt', 'w')
+f_cor = open(save_dir + 'corrupted.txt', 'w')
+
+count = 0
 
 for data in tqdm(test_dataset, total=dataset_len):
   count += 1
