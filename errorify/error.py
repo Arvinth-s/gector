@@ -18,7 +18,7 @@ def flush_queue(pairs, flush=False):
         if pairs.qsize() < FLUSH_SIZE and not flush:
             return
 
-        with open(CORRECT_FILE, 'a') as cfile, open(ERRORED_FILE, 'a') as efile:
+        with open(CORRECT_FILE, 'a', encoding='utf-8') as cfile, open(ERRORED_FILE, 'a', encoding='utf-8') as efile:
             while pairs.qsize() > 0 and (wrote < FLUSH_SIZE or flush):
                 wrote += 1
                 pair = pairs.get()
@@ -57,8 +57,8 @@ def errorify_file(filename: str):
     """Errorify all sentences in a file."""
 
     # Blank files
-    open(CORRECT_FILE, 'w').close()
-    open(ERRORED_FILE, 'w').close()
+    open(CORRECT_FILE, 'w', encoding='utf-8').close()
+    open(ERRORED_FILE, 'w', encoding='utf-8').close()
 
     # Threads = CPU count
     pool = mp.Pool(mp.cpu_count())
@@ -66,7 +66,7 @@ def errorify_file(filename: str):
     pairs = manager.Queue()
 
     # Erroriy each line
-    file = open(filename, 'r')
+    file = open(filename, 'r', encoding='utf-8')
     [x for x in tqdm(pool.imap(errorify, [(l, pairs) for l in readn(file, BATCH_SIZE)]))]
     pool.close()
 

@@ -1,10 +1,10 @@
 ### OM NAMO NARAYANA
 
-
 <hr/>
 <br/>
 
 ## setup script
+
 ```
 conda activate gector
 pip install -r requirements.txt
@@ -12,8 +12,9 @@ curl https://www.cl.cam.ac.uk/research/nl/bea2019st/data/fce_v2.1.bea19.tar.gz |
 ```
 
 ## Preprocess script
+
 ```
-python utils/preprocess_data.py -s 'fce/m2/fce.train.gold.bea19.m2' -t 'fce/m2/fce.train.gold.bea19.m2' -o 'fce/m2/fce.train_preprocessed.gold.bea19.txt'
+python utils/preprocess_data.py -s 'downloads/corrupted.txt' -t 'downloads/original.txt' -o 'dump/tamil/'
 
 python utils/preprocess_data.py -s 'fce/m2/fce.dev.gold.bea19.m2' -t 'fce/m2/fce.dev.gold.bea19.m2' -o 'fce/m2/fce.dev_preprocessed.gold.bea19.txt'
 
@@ -21,12 +22,15 @@ python utils/preprocess_data.py -s 'fce/m2/fce.test.gold.bea19.m2' -t 'fce/m2/fc
 ```
 
 ## Training script
+
 ```
 python train.py --train_set 'fce/m2/fce.train_preprocessed.gold.bea19.txt' --dev_set 'fce/m2/fce.dev_preprocessed.gold.bea19.txt' --vocab_path ./data/output_vocabulary/ --model_dir ./models --transformer_mode roberta
 ```
 
 ## Testing script
+
 Create a input.txt file in dump/
+
 ```
 cd MODEL_DIR && wget https://grammarly-nlp-data-public.s3.amazonaws.com/gector/roberta_1_gectorv2.th && cd ..
 
@@ -34,6 +38,7 @@ python predict.py --model_path MODEL_DIR/roberta_1_gectorv2.th --input_file 'dum
 ```
 
 ## Useful issues
+
 [dataset](https://github.com/grammarly/gector/issues/138)
 
 [training_frozen](https://github.com/grammarly/gector/issues/58)
@@ -49,6 +54,7 @@ python predict.py --model_path MODEL_DIR/roberta_1_gectorv2.th --input_file 'dum
 [chiense_gector](https://github.com/grammarly/gector/issues/94)
 
 ## repo dependencies
+
 [errant](https://github.com/chrisjbryant/errant)
 
 [PIE](https://github.com/awasthiabhijeet/PIE/tree/master/errorify)

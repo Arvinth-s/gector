@@ -70,8 +70,8 @@ save_dir = args.savedir+'train/'
 if(not os.path.isdir(save_dir)):
   os.makedirs(save_dir)
 
-f_org = open(save_dir + 'original.txt', 'w')
-f_cor = open(save_dir + 'corrupted.txt', 'w')
+f_org = open(save_dir + 'original.txt', 'w', encoding="utf-8")
+f_cor = open(save_dir + 'corrupted.txt', 'w', encoding="utf-8")
 # dataset_len = len(dataset)
 
 count = 0
@@ -104,9 +104,13 @@ f_cor.close()
 
 save_dir = args.savedir+'dev/'
 
+if(not os.path.isdir(save_dir)):
+  os.makedirs(save_dir)
 
-f_org = open(save_dir + 'original.txt', 'w')
-f_cor = open(save_dir + 'corrupted.txt', 'w')
+
+
+f_org = open(save_dir + 'original.txt', 'w', encoding="utf-8")
+f_cor = open(save_dir + 'corrupted.txt', 'w', encoding="utf-8")
 
 count = 0
 
