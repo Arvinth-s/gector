@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser()
  
 parser.add_argument("-sd", "--savedir", help = "dataset directory", default='dump/tamil2/')
 parser.add_argument("-n", "--ndata", help = "size of dataset", default=10, type=int)
+# 0 for tamil 1 for english
+parser.add_argument("-lang", "--language", help = "Choose the dataset language", default=0, type=int, choices=[0, 1])
  
 args = parser.parse_args()
  
@@ -37,7 +39,7 @@ def corrupt_homophones(data):
 
 def corrupt_gender(data):
   output_data=""
-  for i in data.split():
+  for i in data.split(" "):
     x=np.random.randint(2, size=1)[0]
     y=i
     if x==0:
@@ -53,7 +55,18 @@ Tamil_Dataset = {
     'test_sentence': "பொழுது சாய்ந்து வெகு நேரமாகிவிட்டது 😁 ?",
 }
 
-curDataset =Tamil_Dataset
+English_Dataset = {
+    'dataset_name': 'glue',
+    'dataset_subset': 'cola',
+    'text_label' : 'sentence', 
+    'test_sentence': "Hello, y'all! How are you 😁 ?"
+}
+
+
+if(args.language==0):
+  curDataset = Tamil_Dataset
+else: 
+  curDataset = English_Dataset
 
 dataset_len = args.ndata
 
@@ -115,7 +128,7 @@ for data in tqdm(test_dataset, total=dataset_len):
   if(count > dataset_len): break
   data = data[curDataset["text_label"]]
   data_original = list(data.split(". "))
-
+  # print('length of original data', len(data_original))
   
   for d in data_original:
     if(d=='\n' or len(d)==0):continue
@@ -127,6 +140,7 @@ for data in tqdm(test_dataset, total=dataset_len):
   data=corrupt_homophones(data)
 
   data_corrupted = list(data.split(". "))
+  # print('length of corrupted data', len(data_corrupted))
 
   for d in data_corrupted:
     if(d=='\n' or len(d)==0):continue

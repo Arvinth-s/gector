@@ -79,6 +79,9 @@ class Seq2LabelsDatasetReader(DatasetReader):
 
                 tokens_and_tags = [pair.rsplit(self._delimeters['labels'], 1)
                                    for pair in line.split(self._delimeters['tokens'])]
+
+                # print('file_path: ', file_path) 
+                # print('line: ', line)                
                 try:
                     tokens = [Token(token) for token, tag in tokens_and_tags]
                     tags = [tag for token, tag in tokens_and_tags]
@@ -90,11 +93,15 @@ class Seq2LabelsDatasetReader(DatasetReader):
                     tokens = [Token(START_TOKEN)] + tokens
 
                 words = [x.text for x in tokens]
+                # print('words: ', words[0][:3])
                 if self._max_len is not None:
                     tokens = tokens[:self._max_len]
                     tags = None if tags is None else tags[:self._max_len]
                 instance = self.text_to_instance(tokens, tags, words)
                 if instance:
+                    # print('tokens: ', tokens)
+                    # print('tags: ', tags)
+                    # print('instance: ', instance)
                     yield instance
 
     def extract_tags(self, tags: List[str]):

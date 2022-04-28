@@ -109,6 +109,9 @@ def main(args):
     namespaces = ['labels', 'd_tags']
     tokens_to_add = {x: default_tokens for x in namespaces}
     # build vocab
+
+    print('train_data: ', train_data)
+
     if args.vocab_path:
         vocab = Vocabulary.from_files(args.vocab_path)
     else:
@@ -299,7 +302,8 @@ if __name__ == '__main__':
                         default='')
     parser.add_argument('--transformer_model',
                         choices=['bert', 'distilbert', 'gpt2', 'roberta', 'transformerxl', 'xlnet', 'albert',
-                                 'bert-large', 'roberta-large', 'xlnet-large'],
+                                 'bert-large', 'roberta-large', 'xlnet-large',
+                                 'xlm'],
                         help='Name of the transformer model.',
                         default='roberta')
     parser.add_argument('--special_tokens_fix',

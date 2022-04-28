@@ -33,7 +33,7 @@ cd MODEL_DIR && wget https://grammarly-nlp-data-public.s3.amazonaws.com/gector/r
 python predict.py --model_path MODEL_DIR/roberta_1_gectorv2.th --input_file 'dump/input.txt' --output_file 'dump/out.txt' --special_tokens_fix 1 --max_len 150 --transformer_model roberta --vocab_path data/output_vocabulary
 ```
 
-## Useful issues
+## Useful issues/link
 [dataset](https://github.com/grammarly/gector/issues/138)
 
 [training_frozen](https://github.com/grammarly/gector/issues/58)
@@ -46,9 +46,18 @@ python predict.py --model_path MODEL_DIR/roberta_1_gectorv2.th --input_file 'dum
 
 [download_zip_repo](https://stackoverflow.com/questions/16261100/cant-download-github-project-with-curl-command)
 
+[params](https://github.com/grammarly/gector/blob/master/docs/training_parameters.md)
+
 [chiense_gector](https://github.com/grammarly/gector/issues/94)
+
+[custom_model](https://github.com/grammarly/gector/issues/135)
 
 ## repo dependencies
 [errant](https://github.com/chrisjbryant/errant)
 
 [PIE](https://github.com/awasthiabhijeet/PIE/tree/master/errorify)
+
+## Useful command
+```ctrl+b c```: create_new_window
+
+```ctrl+b 0```: switch to windows 0
