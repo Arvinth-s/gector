@@ -20,6 +20,9 @@ mkdir ./dump/tamil/dev/data
 python ./utils/preprocess_data.py -s 'dump/tamil/train/corrupted.txt' -t 'dump/tamil/train/original.txt' -o 'dump/tamil/train/data/tamil_train.txt'
 python ./utils/preprocess_data.py -s 'dump/tamil/dev/corrupted.txt' -t 'dump/tamil/dev/original.txt' -o 'dump/tamil/dev/data/tamil_train.txt'
 
+echo "data creation completed."
+./telegram-send.sh "data-creation-completed"
+
 # echo 'Training Tamil'
 
 # python train.py \
