@@ -5,10 +5,10 @@ echo 'Training Tamil'
 
 start_time=$(date +%s.%3N)
 
-model_dir_arg=${1:-models}
-pretrain_folder_arg=${2:-models}
-pretrain_arg=${3:-best}
-updates_per_epoch_arg=${4:-1000}
+model_dir_arg=${1:-models/bert}
+updates_per_epoch_arg=${2:-1000}
+pretrain_folder_arg=${3:-models/bert/}
+pretrain_arg=${4:-best}
 
 echo "parameters: 
 model_dir ${model_dir_arg}
@@ -21,8 +21,8 @@ python train.py \
 --dev_set 'dump/tamil/dev/data/tamil_train.txt' \
 --model_dir $model_dir_arg \
 --updates_per_epoch $updates_per_epoch_arg \
---transformer_model bert \
---vocab_path models/vocabulary \
+--transformer_model xlm \
+--vocab_path $pretrain_folder_arg/vocabulary \
 --pretrain_folder $pretrain_folder_arg \
 --pretrain $pretrain_arg
 # --n_epoch 20 \ 
@@ -34,3 +34,5 @@ echo "Elapsed time: "  $elapsed
 
 echo 'Training-completed'
 ./telegram-send.sh "Training-completed"
+
+./stop_instance.sh
