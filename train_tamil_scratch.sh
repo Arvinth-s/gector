@@ -1,5 +1,7 @@
 clear
 
+conda activate gector
+
 pip install -r requirements.txt
 
 rm ./dump/tamil -r
