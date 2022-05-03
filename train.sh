@@ -1,46 +1,38 @@
-#!/bin/sh
-conda activate gector
+echo 'Training Tamil'
 
-clear
+# rm -r models
+# mkdir models
 
-# rm fce -r
-# curl https://www.cl.cam.ac.uk/research/nl/bea2019st/data/fce_v2.1.bea19.tar.gz | tar -xz
+start_time=$(date +%s.%3N)
 
-mkdir ./dump/train
-mkdir ./dump/dev
-mkdir ./dump/test
+model_dir_arg=${1:-models/bert}
+updates_per_epoch_arg=${2:-1000}
+pretrain_folder_arg=${3:-models/bert/}
+pretrain_arg=${4:-best}
 
-cd errorify
-python ./error.py '../fce/m2/fce.dev.gold.bea19.m2' ../dump/dev
-python ./error.py '../fce/m2/fce.train.gold.bea19.m2' ../dump/train
-python ./error.py '../fce/m2/fce.test.gold.bea19.m2' ../dump/test
+echo "parameters: 
+model_dir ${model_dir_arg}
+pretrain_folder ${pretrain_folder_arg} 
+pretrain_model ${pretrain_arg}
+updates_per_epoch ${updates_per_epoch_arg}"  
 
-cd ..
-python ./utils/preprocess_data.py -s 'dump/train/incorr_sentences.txt' -t 'dump/train/corr_sentences.txt' -o 'dump/data/train.txt'
-
-python ./utils/preprocess_data.py -s 'dump/dev/incorr_sentences.txt' -t 'dump/dev/corr_sentences.txt' -o 'dump/data/dev.txt'
-
-python ./utils/preprocess_data.py -s 'dump/test/incorr_sentences.txt' -t 'dump/test/corr_sentences.txt' -o 'dump/data/test.txt'
-
-# echo 'Training with updated_per_epoch set to 1'
-echo 'Training...'
 python train.py \
---train_set 'dump/data/train.txt' \
---dev_set 'dump/data/dev.txt' \
---vocab_path ./data/output_vocabulary/ \
---model_dir ./models_13_4 \
---transformer_mode roberta \
---updates_per_epoch 100
-echo 'Training completed'
+--train_set 'dump/tamil/train/data/tamil_train.txt' \
+--dev_set 'dump/tamil/dev/data/tamil_train.txt' \
+--model_dir $model_dir_arg \
+--updates_per_epoch $updates_per_epoch_arg \
+--transformer_model xlm \
+--vocab_path $pretrain_folder_arg/vocabulary \
+--pretrain_folder $pretrain_folder_arg \
+--pretrain $pretrain_arg
+# --n_epoch 20 \ 
 
-# echo 'Testing with custom input'
-echo 'Testing...'
-python predict.py \
---model_path models/best.th \
---input_file 'dump/input.txt' \
---output_file 'dump/output.txt' \
---special_tokens_fix 1 \
---max_len 150 \
---transformer_model roberta \
---vocab_path data/output_vocabulary
-echo 'Output generated'
+end_time=$(date +%s.%3N)
+
+elapsed=$(echo "scale=3; $end_time - $start_time" | bc)
+echo "Elapsed time: "  $elapsed
+
+echo 'Training-completed'
+./telegram-send.sh "Training-completed"
+
+./stop_instance.sh

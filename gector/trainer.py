@@ -27,6 +27,9 @@ from allennlp.training.optimizers import Optimizer
 from allennlp.training.tensorboard_writer import TensorboardWriter
 from allennlp.training.trainer_base import TrainerBase
 
+
+from tqdm import tqdm
+
 logger = logging.getLogger(__name__)
 
 
@@ -325,11 +328,12 @@ class Trainer(TrainerBase):
         histogram_parameters = set(self.model.get_parameters_for_histogram_tensorboard_logging())
 
         logger.info("Training")
-        train_generator_tqdm = Tqdm.tqdm(train_generator, total=num_training_batches)
+        # train_generator_tqdm = Tqdm.tqdm(train_generator, total=num_training_batches)
         cumulative_batch_size = 0
         self.optimizer.zero_grad()
         # print('before data')
-        for batch_group in train_generator:
+        # for batch_group in train_generator_tqdm:
+        for batch_group in tqdm(train_generator, total=num_training_batches):
             # print('inside train_generator')
             batches_this_epoch += 1
             self._batch_num_total += 1
@@ -428,7 +432,7 @@ class Trainer(TrainerBase):
             metrics = training_util.get_metrics(self.model, train_loss, batches_this_epoch)
             description = training_util.description_from_metrics(metrics)
 
-            train_generator_tqdm.set_description(description, refresh=False)
+            # train_generator_tqdm.set_description(description, refresh=False)
 
             # Log parameter values to Tensorboard
             if self._tensorboard.should_log_this_batch():

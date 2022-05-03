@@ -145,6 +145,9 @@ class PretrainedBertIndexer(TokenizerIndexer):
         # to adjust all tokenizers
         if hasattr(model_tokenizer, 'encoder'):
             model_tokenizer.vocab = model_tokenizer.encoder
+
+        # print('model_tokenizer.vocab: ', model_tokenizer.vocab[:1])
+
         if hasattr(model_tokenizer, 'sp_model'):
             model_tokenizer.vocab = defaultdict(lambda: 1)
             for i in range(model_tokenizer.sp_model.get_piece_size()):
