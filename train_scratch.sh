@@ -35,6 +35,7 @@ python train.py \
 # --n_epoch 20 \ 
 
 echo 'Training completed'
+./telegram-send.sh "Training-completed"
 
 python predict.py \
 --model_path models/best.th \
@@ -43,3 +44,5 @@ python predict.py \
 --transformer_model bert \
 --vocab_path 'models/vocabulary'
 echo 'Output generated'
+
+./telegram-send.sh "Output-generated"
