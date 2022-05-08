@@ -6,14 +6,14 @@ curl -H "X-Auth-Token: $TOKEN" \
   -H "Content-Type: application/json" \
   --data-binary @- << EOF
 {
-  "action": "stop"
+  "action": "start"
 }
 EOF
 
 instance=$(curl -H "X-Auth-Token: $TOKEN" \
   "https://api.genesiscloud.com/compute/v1/instances/$instance_id")
 x=`echo "$instance" | jq -r '.instance'| jq -r '.status'`
-while([[ $x != "stopped" ]])
+while([[ $x != "active" ]])
 do
     sleep 5
     instance=$(curl -H "X-Auth-Token: $TOKEN" \
@@ -21,7 +21,14 @@ do
     x=`echo "$instance" | jq -r '.instance'| jq -r '.status'`
 done
 
-echo "instance stopped"
-./telegram-send.sh "instance-stopped"
+x=`echo "$instance" | jq -r '.instance'| jq -r '.public_ip'`
+rm ~/.ssh/config
+output=~/.ssh/config
+echo "Host spider-gpu" >> ~/.ssh/config
+echo "HostName ${x}" >> ~/.ssh/config
+echo "User ubuntu" >> ~/.ssh/config
+
+echo "instance started"
+./telegram-send.sh "instance-started"
 echo -e "\a"
 sleep 4
