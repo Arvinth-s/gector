@@ -37,5 +37,7 @@ echo "Elapsed time: "  $elapsed
 echo 'Training-completed'
 ./telegram-send.sh "Training-completed"
 
-./telegram-send.sh "Stoping-instance"
-./stop_instance.sh
+# ./telegram-send.sh "Stoping-instance"
+# ./stop_instance.sh
+
+# bash train.sh models/xlm 5000 models/xlm3 training_state_epoch_2 

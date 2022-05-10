@@ -206,6 +206,7 @@ else:
 dataset_len = args.ndata
 
 train_data_slice="train[:"+str(dataset_len)+"]"
+# test_data_slice="train[1000:]"
 test_data_slice="train["+str(dataset_len)+":]"
 train_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split=train_data_slice)
 test_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split=test_data_slice)

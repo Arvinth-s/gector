@@ -5,7 +5,7 @@ mkdir -p ./dump/tamil/train/
 mkdir -p ./dump/tamil/dev/
 
 
-python error_creator.py --savedir './dump/tamil/' --n 900 --lang 0
+python error_creator.py --savedir './dump/tamil/' --n 300 --lang 0
 
 # errant_parallel -orig './dump/tamil/train/original.txt' -cor './dump/tamil/train/corrupted.txt'  -out './dump/tamil/train/m2check.txt'
 # errant_parallel -orig './dump/tamil/dev/original.txt' -cor './dump/tamil/dev/corrupted.txt'  -out './dump/tamil/dev/m2check.txt'
