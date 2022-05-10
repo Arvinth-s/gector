@@ -11,7 +11,7 @@ clear
 echo "installed requirements"
 
 
-python error_creator.py --savedir './dump/tamil/' --n 100 --lang 0
+python error_creator.py --savedir './dump/tamil/' --n 300 --lang 0
 
 
 mkdir ./dump/tamil/train/data
@@ -27,24 +27,24 @@ mkdir models
 python train.py \
 --train_set 'dump/tamil/train/data/tamil_train.txt' \
 --dev_set 'dump/tamil/dev/data/tamil_train.txt' \
---model_dir ./models \
+--model_dir ./models/xlm \
 --updates_per_epoch 10000 \
---transformer_model bert \
+--transformer_model xlm \
 # --n_epoch 20 \ 
 
 echo 'Training completed'
 ./telegram-send.sh "Training-completed"
 
 python predict.py \
---model_path models/best.th \
+--model_path models/xlm/best.th \
 --input_file 'dump/input.txt' \
 --output_file 'dump/output.txt' \
---transformer_model bert \
+--transformer_model xlm \
 --vocab_path 'models/vocabulary'
 echo 'Output generated'
 
 ./telegram-send.sh "Output-generated"
 
 
-./telegram-send.sh "Stoping-instance"
-./stop_instance.sh
+# ./telegram-send.sh "Stoping-instance"
+# ./stop_instance.sh
