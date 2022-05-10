@@ -44,3 +44,7 @@ python predict.py \
 echo 'Output generated'
 
 ./telegram-send.sh "Output-generated"
+
+
+./telegram-send.sh "Stoping-instance"
+./stop_instance.sh

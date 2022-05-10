@@ -1,3 +1,5 @@
+conda activate gector
+
 echo 'Training Tamil'
 
 # rm -r models
@@ -35,4 +37,5 @@ echo "Elapsed time: "  $elapsed
 echo 'Training-completed'
 ./telegram-send.sh "Training-completed"
 
+./telegram-send.sh "Stoping-instance"
 ./stop_instance.sh

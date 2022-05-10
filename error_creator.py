@@ -48,6 +48,23 @@ def corrupt_gender(data):
     output_data+=y+" "
   return(output_data)
 
+def remove_random_chars(data, remove_prob_percent=10):
+  output_data = ""
+  for i in data:
+    x=np.random.randint(100, size=1)[0]+1
+    if(x > remove_prob_percent):
+      output_data += i
+  return output_data
+
+def remove_random_words(data, remove_prob_percent=5):
+  output_data=""
+  for i in data.split(" "):
+    x=np.random.randint(100, size=1)[0]+1
+    if(x > remove_prob_percent):
+      output_data += i
+    output_data+=i+" "
+  return(output_data)
+
 Tamil_Dataset = {
     'dataset_name': 'oscar',
     'dataset_subset': 'unshuffled_deduplicated_ta',
@@ -104,6 +121,7 @@ for data in tqdm(train_dataset, total=dataset_len):
 
   data=corrupt_gender(data)
   data=corrupt_homophones(data)
+  data=remove_random_chars(data, 10)
 
   data_corrupted = list(data.split(". "))
 
@@ -136,9 +154,10 @@ for data in tqdm(test_dataset, total=dataset_len):
     f_org.write(d)
 
 
+  data=remove_random_words(data)
   data=corrupt_gender(data)
   data=corrupt_homophones(data)
-
+  data=remove_random_chars(data)
   data_corrupted = list(data.split(". "))
   # print('length of corrupted data', len(data_corrupted))
 
@@ -150,6 +169,10 @@ for data in tqdm(test_dataset, total=dataset_len):
 f_org.close()
 f_cor.close()
 
-
+'''
 # print("--------------------------------- Corrupted Data ---------------------------------")
 # print(data)
+இருந்தாள்
+மா
+ாம
+''''''

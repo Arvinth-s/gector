@@ -9,7 +9,7 @@ python predict.py \
 --input_file $input_file_arg \
 --output_file 'dump/output.txt' \
 --transformer_model xlm \
---vocab_path 'models/xlm/vocabulary'
+--vocab_path 'models/xlm2/vocabulary'
 echo 'Output generated'
 
 end_time=$(date +%s.%3N)
