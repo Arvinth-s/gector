@@ -16,11 +16,35 @@ fixed_random_words='''தீவினுக்கோர் பாலம் அ�
 ஆகவே எமது நாட்டை நெருக்கடிக்கு உள்ளாக்க வேண்டாம் என சீனாவிடம் நான் தலைகுனிந்து வேண்டுகின்றேன்.
 அத்துடன் பொன்சேகாவுக்கு அருகில் இருந்த பாதாள கோஷ்டி ஒருவரை கைது செய்ததை போன்று ஏனைய அமைச்சர்களின் பதாள கோஷ்டியினரை கைது செய்ய வேண்டும் என்றும் அவர் குறிப்பிட்டார்.
 திருமதி'''
+fixed_random_words=re.sub('\n', ' ', fixed_random_words)
 fixed_random_words=fixed_random_words.split(' ')
- 
+
+tamil_letters_list =[
+  'க',	'கா',	'கி',	'கீ',	'கு',	'கூ',	'கெ',	'கே',	'கை',	'கொ',	'கோ'	,'கௌ',
+  'ங',	'ஙா',	'ஙி',	'ஙீ',	'ஙு',	'ஙூ',	'ஙெ',	'ஙே',	'ஙை',	'ஙொ',	'ஙோ'	,'ஙௌ',
+  'ச',	'சா',	'சி',	'சீ',	'சு',	'சூ',	'செ',	'சே',	'சை',	'சொ',	'சோ'	,'சௌ',
+  'ஞ',	'ஞா',	'ஞி',	'ஞீ',	'ஞு',	'ஞூ',	'ஞெ',	'ஞே',	'ஞை',	'ஞொ',	'ஞோ'	,'ஞௌ',
+  'ட',	'டா',	'டி',	'டீ',	'டு',	'டூ',	'டெ',	'டே',	'டை',	'டொ',	'டோ'	,'டௌ',
+  'ண',	'ணா',	'ணி',	'ணீ',	'ணு',	'ணூ',	'ணெ',	'ணே',	'ணை',	'ணொ',	'ணோ'	,'ணௌ',
+  'த',	'தா',	'தி',	'தீ',	'து',	'தூ',	'தெ',	'தே',	'தை',	'தொ',	'தோ'	,'தௌ',
+  'ந',	'நா',	'நி',	'நீ',	'நு',	'நூ',	'நெ',	'நே',	'நை',	'நொ',	'நோ'	,'நௌ',
+  'ப',	'பா',	'பி',	'பீ',	'பு',	'பூ',	'பெ',	'பே',	'பை',	'பொ',	'போ'	,'பௌ',
+  'ம',	'மா',	'மி',	'மீ',	'மு',	'மூ',	'மெ',	'மே',	'மை',	'மொ',	'மோ'	,'மௌ',
+  'ய',	'யா',	'யி',	'யீ',	'யு',	'யூ',	'யெ',	'யே',	'யை',	'யொ',	'யோ'	,'யௌ',
+  'ர',	'ரா',	'ரி',	'ரீ',	'ரு',	'ரூ',	'ரெ',	'ரே',	'ரை',	'ரொ',	'ரோ',	'ரௌ',
+  'ல',	'லா',	'லி',	'லீ',	'லு',	'லூ',	'லெ',	'லே',	'லை',	'லொ',	'லோ',	'லௌ',
+  'வ',	'வா',	'வி',	'வீ',	'வு',	'வூ',	'வெ',	'வே',	'வை',	'வொ',	'வோ',	'வௌ',
+  'ழ',	'ழா',	'ழி',	'ழீ',	'ழு',	'ழூ',	'ழெ',	'ழே',	'ழை',	'ழொ',	'ழோ',	'ழௌ',
+  'ள',	'ளா',	'ளி',	'ளீ',	'ளு',	'ளூ',	'ளெ',	'ளே',	'ளை',	'ளொ',	'ளோ',	'ளௌ',
+  'ற',	'றா',	'றி',	'றீ',	'று',	'றூ',	'றெ',	'றே',	'றை',	'றொ',	'றோ',	'றௌ',
+  'ன',	'னா',	'னி',	'னீ',	'னு',	'னூ',	'னெ',	'னே',	'னை',	'னொ',	'னோ',	'னௌ',
+]
+
+tamil_inflation_list = ['ஂ', 'ௗ	', '்', 'ௌ', 'ோ', 'ொ', 'ை', 'ே', 'ெ', 'ூ', 'ு', 'ீ', 'ி', 'ா', 'ஂ']
+
 parser = argparse.ArgumentParser()
  
-parser.add_argument("-sd", "--savedir", help = "dataset directory", default='dump/tamil2/')
+parser.add_argument("-sd", "--savedir", help = "dataset directory", default='dump/tamil/')
 parser.add_argument("-n", "--ndata", help = "size of dataset", default=10, type=int)
 # 0 for tamil 1 for english
 parser.add_argument("-lang", "--language", help = "Choose the dataset language", default=0, type=int, choices=[0, 1])
@@ -58,6 +82,7 @@ def corrupt_gender(data, corrupt_prob_percent=10):
       if re.findall("ள்$", i): y=re.sub("ள்$", "ன்", i)
       else: y=re.sub("ன்$", "ள்", i)
     output_data+=y+" "
+  output_data = output_data[:-1]
   return(output_data)
 
 # def corrupt_tense(data):
@@ -82,6 +107,7 @@ def corrupt_pluarlity(data, corrupt_prob_percent=10):
       if re.findall("ள்$", i): y=re.sub("ள்$", "ரஂ௧ளஂ", i)
       else: y=re.sub("ன்$", "ரஂ௧ளஂ", i)
     output_data+=y+" "
+  output_data = output_data[:-1]
   return(output_data)
 
 def corrupt_thinai(data, corrupt_prob_percent=10):
@@ -96,31 +122,43 @@ def corrupt_thinai(data, corrupt_prob_percent=10):
       elif re.findall("ள்$", i): y=re.sub("ள்$", "து", i)
       # elif re.findall("து$", i): y=re.sub("து$", "ள்", i)
     output_data+=y+" "
+  output_data = output_data[:-1]
   return(output_data)
 
 def remove_random_chars(data, remove_prob_percent=10):
   output_data = ""
-  for i in data:
+  idx = 0
+  while(idx < len(data)):
     x=np.random.randint(100, size=1)[0]+1
-    if(x > remove_prob_percent):
-      output_data += i
+    if(idx==len(data)-1): 
+      output_data += data[idx]
+    elif(x < remove_prob_percent and data[idx:idx+2] in tamil_letters_list):
+      if(data[idx+1] in tamil_inflation_list): 
+        #case when the previous character to removed character is .
+        if(idx > 0 and data[idx-1]=='.'): idx -= 1
+        idx += 1
+    else: 
+      output_data += data[idx]
+    idx += 1
   return output_data
 
 def remove_random_words(data, remove_prob_percent=5):
   output_data=""
   for i in data.split(" "):
     x=np.random.randint(100, size=1)[0]+1
-    if(x > remove_prob_percent):
+    if(x > remove_prob_percent or re.findall(".", i) or re.findall("\n", i)):
       output_data += i + " "
+  output_data = output_data[:-1]
   return(output_data)
 
 def repeat_words(data, repeat_prob_percentage=5):
   output_data=""
   for i in data.split(" "):
     x=np.random.randint(100, size=1)[0]+1
-    if(x <= repeat_prob_percentage):
+    if(x <= repeat_prob_percentage and not (re.findall('\n', i) or re.findall('.', i))):
       output_data += i + " "
-    output_data+=i+" "
+    output_data +=i + " "
+  output_data = output_data[:-1]
   return(output_data)
 
 def add_random_words(data, random_words=fixed_random_words, add_prob_percentage=5):
@@ -130,9 +168,10 @@ def add_random_words(data, random_words=fixed_random_words, add_prob_percentage=
   for i in data.split(" "):
     x=np.random.randint(100, size=1)[0]+1
     idx=np.random.randint(n, size=1)[0]
-    if(x <= add_prob_percentage):
+    if((x <= add_prob_percentage  and not (re.findall('\n', i) or re.findall('.', i)))):
       output_data += random_words[idx] + " "
-    output_data+=i+" "
+    output_data += i + " "
+  output_data = output_data[:-1]
   return(output_data)
 
 def merge_sentence(data, merge_prob_percent=10):
@@ -166,9 +205,10 @@ else:
 
 dataset_len = args.ndata
 
-
-train_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[:100]')
-test_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split='train[100:]')
+train_data_slice="train[:"+str(dataset_len)+"]"
+test_data_slice="train["+str(dataset_len)+":]"
+train_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split=train_data_slice)
+test_dataset = load_dataset(curDataset["dataset_name"] , curDataset["dataset_subset"], split=test_data_slice)
 print(test_dataset)
 # print(dataset[0][curDataset["text_label"]])
 
@@ -207,11 +247,11 @@ for data in tqdm(train_dataset, total=dataset_len):
   data=remove_random_words(data, 10)
   data=add_random_words(data, fixed_random_words, 30)
   data=repeat_words(data, 30)
-  data=merge_sentence(data, 30)
+  # data=merge_sentence(data, 30)
   data=corrupt_thinai(data, 30)
   data=corrupt_gender(data, 30)
   data=corrupt_homophones(data)
-  data=remove_random_chars(data)
+  data=remove_random_chars(data, 10)
   data_corrupted = list(data.split(". "))
 
   for d in data_corrupted:
@@ -246,11 +286,11 @@ for data in tqdm(test_dataset, total=dataset_len):
   data=remove_random_words(data, 10)
   data=add_random_words(data, fixed_random_words, 30)
   data=repeat_words(data, 30)
-  data=merge_sentence(data, 30)
+  # data=merge_sentence(data, 30)
   data=corrupt_thinai(data, 30)
   data=corrupt_gender(data, 30)
   data=corrupt_homophones(data)
-  data=remove_random_chars(data)
+  data=remove_random_chars(data, 10)
   data_corrupted = list(data.split(". "))
   # print('length of corrupted data', len(data_corrupted))
 

@@ -5,7 +5,7 @@ mkdir -p ./dump/tamil/train/
 mkdir -p ./dump/tamil/dev/
 
 
-python error_creator.py --savedir './dump/tamil/' --n 100 --lang 0
+python error_creator.py --savedir './dump/tamil/' --n 900 --lang 0
 
 # errant_parallel -orig './dump/tamil/train/original.txt' -cor './dump/tamil/train/corrupted.txt'  -out './dump/tamil/train/m2check.txt'
 # errant_parallel -orig './dump/tamil/dev/original.txt' -cor './dump/tamil/dev/corrupted.txt'  -out './dump/tamil/dev/m2check.txt'
@@ -18,7 +18,9 @@ python error_creator.py --savedir './dump/tamil/' --n 100 --lang 0
 mkdir ./dump/tamil/train/data
 mkdir ./dump/tamil/dev/data
 python ./utils/preprocess_data.py -s 'dump/tamil/train/corrupted.txt' -t 'dump/tamil/train/original.txt' -o 'dump/tamil/train/data/tamil_train.txt'
+echo 'processed training set'
 python ./utils/preprocess_data.py -s 'dump/tamil/dev/corrupted.txt' -t 'dump/tamil/dev/original.txt' -o 'dump/tamil/dev/data/tamil_train.txt'
+echo 'processed testing set'
 
 echo "data creation completed."
 ./telegram-send.sh "data-creation-completed"

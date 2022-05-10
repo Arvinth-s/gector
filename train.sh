@@ -7,9 +7,9 @@ echo 'Training Tamil'
 
 start_time=$(date +%s.%3N)
 
-model_dir_arg=${1:-models/bert}
-updates_per_epoch_arg=${2:-1000}
-pretrain_folder_arg=${3:-models/bert/}
+model_dir_arg=${1:-models/xlm}
+updates_per_epoch_arg=${2:-5000}
+pretrain_folder_arg=${3:-models/xlm/}
 pretrain_arg=${4:-best}
 
 echo "parameters: 
