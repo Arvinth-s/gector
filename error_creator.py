@@ -43,6 +43,15 @@ tamil_letters_list =[
 tamil_inflation_list = ['ஂ', 'ௗ	', '்', 'ௌ', 'ோ', 'ொ', 'ை', 'ே', 'ெ', 'ூ', 'ு', 'ீ', 'ி', 'ா', 'ஂ']
 
 parser = argparse.ArgumentParser()
+
+repeated_words_count = 0
+added_words_count = 0
+removed_words_count = 0
+removed_chars_count = 0
+added_chars_count = 0
+repeated_chars_count = 0
+
+
  
 parser.add_argument("-sd", "--savedir", help = "dataset directory", default='dump/tamil/')
 parser.add_argument("-n", "--ndata", help = "size of dataset", default=10, type=int)
@@ -125,14 +134,19 @@ def corrupt_thinai(data, corrupt_prob_percent=10):
   output_data = output_data[:-1]
   return(output_data)
 
-def remove_random_chars(data, remove_prob_percent=10):
+def remove_random_chars(data, remove_prob_percent=10, removed_chars_count=removed_chars_count):
   output_data = ""
   idx = 0
   while(idx < len(data)):
     x=np.random.randint(100, size=1)[0]+1
     if(idx==len(data)-1): 
       output_data += data[idx]
+    elif(data[idx] not in tamil_letters_list):
+      output_data += data[idx]
+    elif(data[idx+1] == '.' or data[idx+1]=='\n' or data[idx+1] ==" "): output_data += data[idx]
+    elif(data[idx-1] == '.' or data[idx-1]=='\n' or data[idx-1] ==" "): output_data += data[idx]
     elif(x < remove_prob_percent and data[idx:idx+2] in tamil_letters_list):
+      removed_chars_count += 1  
       if(data[idx+1] in tamil_inflation_list): 
         #case when the previous character to removed character is .
         if(idx > 0 and data[idx-1]=='.'): idx -= 1
@@ -142,26 +156,71 @@ def remove_random_chars(data, remove_prob_percent=10):
     idx += 1
   return output_data
 
-def remove_random_words(data, remove_prob_percent=5):
+def repeat_chars(data, repeat_prob_percent=10, repeated_chars_count=repeated_chars_count):
+  output_data = ""
+  idx = 0
+  while(idx < len(data)):
+    x=np.random.randint(100, size=1)[0]+1
+    if(idx==len(data)-1): 
+      output_data += data[idx]
+    elif(data[idx] not in tamil_letters_list): 
+      output_data += data[idx]
+    elif(x < repeat_prob_percent and data[idx:idx+2] in tamil_letters_list ):
+      repeated_chars_count += 1  
+      if(data[idx+1] in tamil_inflation_list): 
+        output_data += data[idx:idx+2] + data[idx:idx+2] + data[idx:idx+2]
+        idx += 1
+      else: 
+        output_data += data[idx:idx+1] + data[idx:idx+1] + data[idx:idx+1]
+    else: 
+      output_data += data[idx]
+    idx += 1
+  return output_data
+
+def add_random_chars(data, random_chars=tamil_letters_list, add_prob_percentage=10, added_chars_count=added_chars_count):
+  output_data=""
+  n = len(random_chars)
+  if(n==0): return data
+  idx = 0
+  while(idx < len(data)):
+    x=np.random.randint(100, size=1)[0]+1
+    if(idx==len(data)-1): 
+      output_data += data[idx]
+    elif(x < add_prob_percentage and data[idx:idx+2] in tamil_letters_list):
+      if((x <= add_prob_percentage  and not (re.findall('\n', data[idx]) or re.findall('.', data[idx])))):
+        added_chars_count += 1    
+        random_idx = np.random.randint(n, size=2)
+        output_data += random_chars[random_idx[0]] + random_chars[random_idx[1]]
+        idx += 1
+      else: 
+        output_data += data[idx:idx+1] 
+    else: 
+      output_data += data[idx]
+    idx += 1
+  return output_data
+
+def remove_random_words(data, remove_prob_percent=5, removed_words_count=removed_words_count ):
   output_data=""
   for i in data.split(" "):
     x=np.random.randint(100, size=1)[0]+1
     if(x > remove_prob_percent or re.findall(".", i) or re.findall("\n", i)):
+      removed_words_count += 1  
       output_data += i + " "
   output_data = output_data[:-1]
   return(output_data)
 
-def repeat_words(data, repeat_prob_percentage=5):
+def repeat_words(data, repeat_prob_percentage=5, repeated_words_count=repeated_words_count):
   output_data=""
   for i in data.split(" "):
     x=np.random.randint(100, size=1)[0]+1
     if(x <= repeat_prob_percentage and not (re.findall('\n', i) or re.findall('.', i))):
+      repeated_words_count += 1
       output_data += i + " "
     output_data +=i + " "
   output_data = output_data[:-1]
   return(output_data)
 
-def add_random_words(data, random_words=fixed_random_words, add_prob_percentage=5):
+def add_random_words(data, random_words=fixed_random_words, add_prob_percentage=5, added_words_count=added_words_count):
   output_data=""
   n = len(random_words)
   if(n==0): return data
@@ -169,6 +228,7 @@ def add_random_words(data, random_words=fixed_random_words, add_prob_percentage=
     x=np.random.randint(100, size=1)[0]+1
     idx=np.random.randint(n, size=1)[0]
     if((x <= add_prob_percentage  and not (re.findall('\n', i) or re.findall('.', i)))):
+      added_words_count += 1
       output_data += random_words[idx] + " "
     output_data += i + " "
   output_data = output_data[:-1]
@@ -253,6 +313,8 @@ for data in tqdm(train_dataset, total=dataset_len):
   data=corrupt_gender(data, 30)
   data=corrupt_homophones(data)
   data=remove_random_chars(data, 10)
+  data=repeat_chars(data, 10)
+  data=add_random_chars(data, tamil_letters_list, 10)
   data_corrupted = list(data.split(". "))
 
   for d in data_corrupted:
@@ -262,6 +324,13 @@ for data in tqdm(train_dataset, total=dataset_len):
 
 f_org.close()
 f_cor.close()
+
+print('repeated_words_count', repeated_words_count,
+'added_words_count', added_words_count,
+'removed_words_count', removed_words_count,
+'removed_chars_count', removed_chars_count,
+'added_chars_count', added_chars_count,
+'repeated_chars_count', repeated_chars_count)
 
 save_dir = args.savedir+'dev/'
 
@@ -292,6 +361,8 @@ for data in tqdm(test_dataset, total=dataset_len):
   data=corrupt_gender(data, 30)
   data=corrupt_homophones(data)
   data=remove_random_chars(data, 10)
+  data=repeat_chars(data, 10)
+  data=add_random_chars(data, tamil_letters_list, 10)
   data_corrupted = list(data.split(". "))
   # print('length of corrupted data', len(data_corrupted))
 

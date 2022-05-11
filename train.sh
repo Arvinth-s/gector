@@ -40,4 +40,4 @@ echo 'Training-completed'
 # ./telegram-send.sh "Stoping-instance"
 # ./stop_instance.sh
 
-# bash train.sh models/xlm 5000 models/xlm3 training_state_epoch_2 
+# bash train.sh models/xlm2 5000 models/xlm training_state_epoch_4 
